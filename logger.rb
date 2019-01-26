@@ -72,6 +72,13 @@ class Logger < Thor
     puts lines.sort
   end
 
+  desc :delete_all, 'delete all documents'
+  def delete_all
+    es = Elasticsearch::Client.new
+    result = es.delete_by_query(index: index, type: type, body: {query: {match_all: {}}})
+    shell.say("#{result['total']} items deleted", :green)
+  end
+
   no_commands do
     def index; @index ||= options[:index]; end
     def type; @type ||= options[:type]; end
